@@ -17,7 +17,6 @@ import MentorSignUp from './MentorSignUp';
 import '../dist/styles.css';
 import PersonalityAnalysis from './PersonalityAnalysis';
 
-
 class App extends Component {
   constructor() {
     super();
@@ -29,35 +28,33 @@ class App extends Component {
       isMentor: '',
       videoChat: false,
       roomName: '',
+      socketId: '',
+      socketName: '',
     };
     this.socket = io();
     this.setIsUserOn = this.setIsUserOn.bind(this);
     this.socket.on('request', (data) => {
+      console.log('request', data);
       this.setState({
         videoChat: true,
         roomName: data.roomName,
+        socketId: data.fromSocket,
+        socketName: data.name,
+      });
+    });
+    this.socket.on('enterVideoChat', (data) => {
+      console.log('entervideochat', data);
+      this.setState({
+        videoChat: true,
+        roomName: data.roomName,
+        socketId: data.toSocket,
+        socketName: data.name,
       });
     });
   }
 
-  // componentDidMount() {
-  //   axios.get('/home')
-  //     .then((res) => {
-  //       console.log(res.data, '!!!!');
-  //       if (res.data.status === 'cookie') {
-  //         this.setIsUserOn(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // }
-
-
   setIsUserOn(info) {
     const { isUserOn } = this.state;
-    this.socket = io.connect();
-    console.log(info);
     this.setState({
       isUserOn: true,
       name: info.dbInfo.fullName,
@@ -65,7 +62,6 @@ class App extends Component {
       userId: info.dbInfo.id,
       isMentor: info.dbInfo.isMentor,
     });
-    console.log(isUserOn);
     this.socket.emit('userLoggedIn', {
       userId: info.dbInfo.id,
       name: info.dbInfo.fullName,
@@ -83,7 +79,6 @@ class App extends Component {
       <div className="nav">
         <Nav name={name} isUserOn={isUserOn} />
 
-
         <Route exact path="/" component={Home} />
         <Route path="/user-profile" component={UserProfile} />
         <Route path="/mentor" component={MentorHome} />
@@ -94,20 +89,27 @@ class App extends Component {
         <Route path="/mentor-sign-up" component={() => <MentorSignUp isMentor={isMentor} userId={userId} />} />
         <div className="main">
           {!videoChat && (
-          <Button
-            component={Link}
-            to="/chat"
-          >
-HEREEEE
-
-          </Button>
-          )}
-          {!isUserOn && <Login setIsUserOn={this.setIsUserOn} />}
-        </div>
+            <Button
+              component={Link}
+              to="/chat"
+            >
+              HEREEEE
+              
+        <div className="main">
+                {videoChat && (
+                  <Button
+                    component={Link}
+                    to="/chat"
+                  >
+                    HEREEEE
+            </Button>
+                )}
+                {!isUserOn && <Login setIsUserOn={this.setIsUserOn} />}
+              </div>
       </div>
-    );
-  }
-}
-
-const AppWithRouter = withRouter(App);
-export default AppWithRouter;
+          );
+          }
+        }
+        
+        const AppWithRouter = withRouter(App);
+        export default AppWithRouter;

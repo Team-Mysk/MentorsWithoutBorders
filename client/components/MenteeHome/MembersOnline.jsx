@@ -22,13 +22,15 @@ class MembersOnline extends Component {
     this.socket.emit('getMyMentors', userId);
   }
 
-  sendChatRequest(toUserId) {
+  sendChatRequest(e, toUserId) {
+    e.preventDefault();
     const { userId } = this.props;
     const data = {
-      userId, 
+      userId,
       toUserId,
     }
     this.socket.emit('chatRequest', data);
+    this.socket.emit('getMyMentors', userId);
   }
 
   render() {
@@ -41,18 +43,18 @@ class MembersOnline extends Component {
           }}
           >
             <center>
-        Mentors Online
+              Mentors Online
             </center>
           </span>
           <br />
           <hr />
-          { mentors.map(mentor => (
+          {mentors.map(mentor => (
             <ListItem
               key={mentor.id}
               primaryText={mentor.fullName}
               rightAvatar={<Avatar src={mentor.photo} />}
               rightIcon={<CommunicationChatBubble />}
-              onClick={() => this.sendChatRequest(mentor.id)}
+              onClick={(e) => this.sendChatRequest(e, mentor.id)}
             />
           ))}
         </List>

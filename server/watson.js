@@ -1,6 +1,7 @@
 const watson = require('watson-developer-cloud');
 const vcapServices = require('vcap_services');
 const LanguageTranslatorV3 = require('watson-developer-cloud/language-translator/v3');
+const { textLanguages } = require('./language');
 
 const sttAuthService = new watson.AuthorizationV1(
   Object.assign(
@@ -35,14 +36,16 @@ module.exports.speechToText = (app) => {
   });
 };
 
-module.exports.translate = (text, socket) => {
+module.exports.translate = (text, socket, from, to) => {
   let result = '';
-
+  const targetLanguage = from.substring(0, 2);
+  console.log(from, targetLanguage);
+  console.log(from, to, '------');
   const parameters = {
     text,
-    model_id: 'en-es',
+    model_id: `${targetLanguage}-${textLanguages[to]}`,
   };
-
+  console.log('🔥 🔥 🔥 🔥 PARAMS', from, to, parameters);
   languageTranslator.translate(
     parameters,
     (error, response) => {

@@ -30,8 +30,9 @@ class Chat extends Component {
       message: '',
       messages: [],
       msgHistory: '',
-      test: '',
       language: '',
+      translate: '',
+      test: '',
     };
     this.translate = this.translate.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
@@ -42,13 +43,11 @@ class Chat extends Component {
 
     socket.on('results', (data) => {
       const results = JSON.parse(data);
-      const { messages } = this.state;
-      messages.push({
+      this.socket.emit('new message', {
         name,
         message: results.translations[0].translation,
         time: new Date(),
       });
-      this.setState({ messages });
     });
 
     socket.on('new message', (data) => {
@@ -60,8 +59,8 @@ class Chat extends Component {
   }
 
   componentWillMount() {
-    const { name } = this.props;
-    this.setState({ name });
+    const { name, language, translate } = this.props;
+    this.setState({ name, language, translate });
     this.socket.emit('userJoin', { name });
   }
 
@@ -116,13 +115,15 @@ class Chat extends Component {
     const { name, message } = this.state;
     const newMessage = { name, message };
 
-    this.socket.emit('new message', newMessage);
+    // this.socket.emit('new message', newMessage);
     this.setState({ message: '' });
   }
 
   translate() {
-    const { test } = this.state;
-    this.socket.emit('translationJob', test);
+    const { test, language, translate } = this.state;
+
+    console.log('====', test, language, translate);
+    this.socket.emit('translationJob', test, language, translate);
   }
 
   render() {

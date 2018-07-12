@@ -33,7 +33,10 @@ const LanguageSelector = ({ classes, handleLanguageSelect }) => (
         <div>
           <ListItem
             button
-            onClick={() => handleLanguageSelect(Object.values(language)[0])}
+            onClick={() => handleLanguageSelect(
+              Object.values(language)[0],
+              Object.keys(language)[0],
+            )}
           >
             <Avatar
               src={`../../images/${Object.keys(language)[0]}.png`}

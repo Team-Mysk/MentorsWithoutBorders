@@ -12,44 +12,76 @@ class VideoChatRoom extends Component {
     super(props);
     this.state = {
       language: '',
-      roomId: 320319,
       translate: '',
-      
     };
     this.handleLanguageSelect = this.handleLanguageSelect.bind(this);
     this.socket = this.props.socket;
-  }
-
-  componentDidMount() {
-    console.log(this.props);
-    this.socket.emit()
-  }
-
-  handleLanguageSelect(language) {
-    console.log(language);
-    this.setState({
-      language,
-      translate: language,
+    this.socket.on('translate', (translate) => {
+      console.log('translate recd: ', translate);
+      this.setState({ translate });
     });
+  }
 
+  componentWillMount() {
+    const { language, roomName, socket } = this.props;
+    roomName && this.setState({ roomName, language });
+  }
+
+  handleLanguageSelect(language, translate) {
+    const { socket, socketId } = this.props;
+    console.log(socketId);
+    this.setState({ language });
+    const data = {
+      socketId,
+      translate,
+    };
+    this.socket.emit('translate', data);
   }
 
   render() {
-    const { name, socket } = this.props;
-    const { language, roomId, translate } = this.state;
-    console.log(socket);
+    const {
+      name, roomName, socket, socketId,
+    } = this.props;
+    const { language, translate } = this.state;
     return (
 
       <Grid className="video-chatroom" container justify="center">
-        {language && roomId ? (
+        {language && roomName ? (
           <React.Fragment>
-            <Grid item component={() => <VideoComponent name={name} socket={socket} />} />
-            <Grid item xs={8} component={() => <Chat translate={translate} language={language} name={name} socket={socket} />} />
+            <Grid
+              item
+              component={() => (
+                <VideoComponent
+                  name={name}
+                  socket={socket}
+                  language={language}
+                  translate={translate}
+                />
+              )}
+            />
+            <Grid
+              item
+              xs={8}
+              component={() => (
+                <Chat
+                  name={name}
+                  language={language}
+                  socket={socket}
+                  translate={translate}
+                />
+              )}
+            />
           </React.Fragment>
-
         ) : (
-          <Grid item component={() => <LanguageSelector handleLanguageSelect={this.handleLanguageSelect} />} />
-        )}
+            <Grid
+              item
+              component={() => (
+                <LanguageSelector
+                  handleLanguageSelect={this.handleLanguageSelect}
+                />
+              )}
+            />
+          )}
       </Grid>
     );
   }

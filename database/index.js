@@ -136,7 +136,6 @@ const findUserById = (userId, callback) => {
 
 // saves user to database
 const saveUser = (query) => {
-  // .create() combines .build() and .save()
   User.create(query).then((user) => {
     console.log(query.fullName, 'is saved to db');
   }).catch((err) => {
@@ -158,10 +157,14 @@ const allLocation = (callback) => {
 const getMyMentors = (userId, cb) => {
   MyMentor.findAll({ where: { userId } })
     .then((data) => {
-      data.forEach(({ dataValues: { mentorId: id } }) => {
-        User.findAll({ where: { id } })
-          .then(users => cb(users));
-      });
+      const users = data.map(({ dataValues: { mentorId: id } }) => id);
+      User.findAll({
+        where: {
+          id: {
+            [Op.or]: users,
+          },
+        },
+      }).then(mentors => cb(mentors));
     });
 };
 
@@ -201,7 +204,6 @@ const loginUser = (userId, socket) => {
 const logoutUser = (userId) => {
   User.findById(userId)
     .then((user) => {
-      console.log(user);
       user.update({ socket: null });
     });
 };
@@ -213,7 +215,7 @@ const setAvgLoggedInTime = (userId, login, logout) => {
       let currentAvgLoggedInTime = ((login + logout) / 2);
       let avgLoggedInTime = ((prevAvgLoggedInTime + currentAvgLoggedInTime) / 2);
       console.log('This is avg loggedInTime', avgLoggedInTime)
-      
+
       user.update({ avgLoggedInTime });
       console.log('It got updated')
     });
@@ -235,7 +237,7 @@ const updateUserWordCount = (userId, wordCount, callback) => {
 // sets the user to become a mentor
 const mentorStatus = (userId) => {
   User.findById(userId).then((user) => {
-    user.update({isMentor: true});
+    user.update({ isMentor: true });
   });
 }
 

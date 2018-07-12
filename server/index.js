@@ -85,7 +85,6 @@ io.on('connection', (socket) => {
   //   });
   // });
 
-
   socket.on('new message', (message) => {
     console.log('✉️ socket.new message', message);
     // Save message to message database
@@ -96,22 +95,32 @@ io.on('connection', (socket) => {
     io.to(socket.id).emit('new message', message);
   });
 
-  socket.on('translationJob', (text) => {
-    console.log('text', text);
-    translate(text, socket);
+  socket.on('translationJob', (test, language, translation) => {
+    console.log('text', test, language, translation);
+    translate(test, socket, language, translation);
   });
 
   socket.on('chatRequest', (client) => {
     // console.log(client)
     data.getSocketId(client.toUserId, (user) => {
       const roomName = `${client.userId}${user.id}`;
+      console.log('socket.id:', socket.id, 'user.socket', user.socket);
       const reqPkg = {
-        from: user.id,
         roomName,
+        from: client.userId,
+        fromSocket: socket.id,
+        to: user.id,
+        toSocket: user.socket,
       };
       console.log(user.socket, '⛔⛔ UserSocket @ chatrequest 94');
       io.to(user.socket).emit('request', reqPkg);
+      socket.emit('enterVideoChat', reqPkg);
     });
+  });
+
+  socket.on('translate', (info) => {
+    console.log('socketId: ', info, info.socketId, info.translate);
+    io.to(info.socketId).emit('translate', info.translate);
   });
 
   socket.on('disconnect', () => {
