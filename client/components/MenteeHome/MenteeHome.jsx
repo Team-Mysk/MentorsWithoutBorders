@@ -31,6 +31,7 @@ class MenteeHome extends Component {
     super(props);
     this.state = {
       userId: this.props.userId,
+      username: '',
       quotes: [],
       isMentor: this.props.isMentor,
       question: '',
@@ -46,7 +47,11 @@ class MenteeHome extends Component {
         userId: this.state.userId,
       }
     }).then((res) => {
-      this.setState({ quotes: res.data });
+      console.log('THis is response data', res.data)
+      this.setState({ 
+        quotes: res.data.results,
+        username: res.data.name 
+      });
     });
   }
 
@@ -69,11 +74,11 @@ class MenteeHome extends Component {
   checkTime() {
     const time = new Date().getHours();
     if (time < 12) {
-      return 'Good Morning!';
+      return `Good Morning ${this.state.username}!`;
     } if (time < 18) {
-      return 'Good Afternoon!';
+      return `Good Afternoon ${this.state.username}!`;
     }
-    return 'Good Evening!';
+    return `Good Evening ${this.state.username}!`;
   }
 
   renderMentorQs() {
@@ -86,6 +91,7 @@ class MenteeHome extends Component {
 
   render() {
     const { classes, userId } = this.props;
+    console.log('These are props', this.props)
 
     return (
       <div className={classes.root}>
@@ -127,11 +133,11 @@ class MenteeHome extends Component {
                 </div>
               </Paper>
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={8}
-            >
-              <Paper className={classes.paper}>
+            > */}
+              {/* <Paper className={classes.paper}>
                 <div
                   className="menteeOldQ"
                   style={{
@@ -147,7 +153,7 @@ class MenteeHome extends Component {
                   What would happen if I binge eat hot cheetos? 🤔🤔🤔
                 </div>
               </Paper>
-            </Grid>
+            </Grid> */}
 
           </Grid>
       </div>

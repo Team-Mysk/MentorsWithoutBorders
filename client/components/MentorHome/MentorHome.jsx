@@ -40,7 +40,7 @@ class MentorHome extends React.Component {
         userId: this.state.userId,
       },
     }).then((res) => {
-      this.setState({ questions: res.data });
+      this.setState({ questions: res.data.results });
     });
   }
 

@@ -47,7 +47,7 @@ class MembersOnline extends Component {
               fontFamily: 'sans-serif', fontWeight: 'bold', fontSize: '18px',
             }}
             >
-              <center>
+              <center className='onlineMentors'>
                 Mentors Online
               </center>
             </span>
