@@ -115,8 +115,7 @@ class MenteeHome extends Component {
             <Grid item xs={4} style={{ height: 500 }}>
               <Paper className={classes.paper}>
                 <div>
-                  {!this.state.isMentor
-                    ? (
+                  {!this.state.isMentor ? (
                       <button className="signup-btn">
                         <Link to="/mentor-sign-up">
                           Become a Mentor!

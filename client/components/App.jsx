@@ -97,7 +97,7 @@ class App extends Component {
 
         <Route exact path="/" component={Home} />
         <PrivateRoute isUserOn={isUserOn} path="/mentor" component={() => <MentorHome userId={userId} />} />
-        <PrivateRoute isUserOn={isUserOn} path="/mentee" component={() => <MenteeHome isUserOn={isUserOn} userId={userId} socket={this.socket} />} />
+        <PrivateRoute isUserOn={isUserOn} path="/mentee" component={() => <MenteeHome isUserOn={isUserOn} userId={userId} isMentor={isMentor} socket={this.socket} />} />
         <PrivateRoute isUserOn={isUserOn} path="/chat" component={() => <VideoChatRoom {...this.state} socket={this.socket} isUserOn={isUserOn} />} />
         <PrivateRoute isUserOn={isUserOn} path="/searchResults" component={MentorSearch} isUserOn={isUserOn} />
         <PrivateRoute isUserOn={isUserOn} path="/personality-analysis" component={() => <PersonalityAnalysis userId={userId} isUserOn={isUserOn} />} />
