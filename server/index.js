@@ -78,6 +78,7 @@ io.on('connection', (socket) => {
     };
 
     users.userId = client.userId;
+    users.name = client.name;
     console.log('✅✅✅getmy', users[socket.id].userId);
     data.loginUser(client.userId, socket.id);
     data.getMyMentors(users[socket.id].userId, (mentors) => {
@@ -449,14 +450,24 @@ app.post('/addInput', (req, res) => {
 
 // retrieve quote/question depending on query content
 app.get('/seeInput', (req, res) => {
+  let name = users.name;
+  name = name.split(' ');
   if (req.query.type === 'question') {
     data.allQuestions(req.query.userId, (results) => {
-      res.send(results);
+
+      // results = results.reverse();
+      res.send({
+        results,
+        name: name[0]
+      });
     });
   }
   if (req.query.type === 'quote') {
     data.allQuotes(req.query.userId, (results) => {
-      res.send(results);
+      res.send({
+        results,
+        name: name[0]
+      });
     });
   }
 });

@@ -399,6 +399,7 @@ const allQuestions = (userId, callback) => {
       { model: User },
     ],
   }).then((questions) => {
+    console.log('These are the questions', questions)
     // console.log(questions[0].dataValues.user.dataValues);
     const userQs = questions.map((info) => {
       const userInfo = info.dataValues.user.dataValues;
